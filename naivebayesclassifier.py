@@ -55,14 +55,10 @@ pipeline.score(X_test, y_test)
 from jcopml.plot import plot_confusion_matrix
 plot_confusion_matrix(X_train, y_train, X_test, y_test, pipeline)
 
-# excelfile1 = pd.ExcelWriter("KlasifikasiDataTesting.xlsx")
+excelfile1 = pd.ExcelWriter("KlasifikasiDataTesting.xlsx")
+dtesting.to_excel(excelfile1)
+excelfile1.close()
 
-# dtesting.to_excel(excelfile1)
-
-# excelfile1.save()
-
-# excelfile1 = pd.ExcelWriter("KlasifikasiDataTraining.xlsx")
-
-# dtraining.to_excel(excelfile1)
-
-# excelfile1.save()
+excelfile1 = pd.ExcelWriter("KlasifikasiDataTraining.xlsx")
+dtraining.to_excel(excelfile1)
+excelfile1.close()
