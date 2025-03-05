@@ -5,18 +5,14 @@ from nltk.sentiment import SentimentIntensityAnalyzer
 # Inisialisasi VADER untuk analisis sentimen
 sia = SentimentIntensityAnalyzer()
 
-# Data teks yang diberikan
-text_data = [
-    "Kelihatan sekali calon yg berkwalitas, punya kapasitas dan memiliki kompetensi, integritas dan layak sbg panutan",
-    "Kasian pak ganjar",
-    "Buktinya ganjar anis kmu kalah pilpres",
-    "Anis cuma pinter ngomong waktu jadi gubernur DKI banyak ngibul tidak sesuai fakta. Tapi sekarang Kabar nya Anis banyak hutang nyungsep ke got jadi gembel politik 🎉😂",
-    "Siapa yg menonton vidio ini setelah bapak prabowo terpilih❤",
-    "aku cinta prabowo kiw kiw",
-    "wow anis pintar ngmong ya tpi kerja nol mw ketawa tpi takut dosa",
-    "Assalamualaikum abah anies yang kami hormati kami cintai  semoga sehat selalu  orang baik ya tetap orang baik",
-    "prabowo menang anis menangissssssss mampus luuuuu"
-]
+# Membaca data dari file Excel
+file_path = "datayangmaudicleaning.xlsx"
+df_input = pd.read_excel(file_path)
+
+# Pastikan ada kolom yang berisi teks (ganti 'KolomTeks' sesuai nama kolom di file Anda)
+text_column = "text"  # Ganti dengan nama kolom yang sesuai
+if text_column not in df_input.columns:
+    raise ValueError(f"Kolom '{text_column}' tidak ditemukan dalam file.")
 
 # Kata kunci untuk masing-masing pendukung
 keywords = {
@@ -27,7 +23,7 @@ keywords = {
 
 # Fungsi untuk membersihkan teks
 def clean_text(text):
-    text = re.sub(r'[^a-zA-Z\s]', '', text)  # Menghapus karakter khusus
+    text = re.sub(r'[^a-zA-Z\s]', '', str(text))  # Menghapus karakter khusus
     text = text.lower().strip()  # Konversi ke huruf kecil
     return text
 
@@ -42,7 +38,7 @@ def classify_supporter(text):
 # Menganalisis sentimen dan menentukan kategori
 results = []
 
-for text in text_data:
+for text in df_input[text_column].dropna():  # Menghindari nilai NaN
     cleaned_text = clean_text(text)
     sentiment_score = sia.polarity_scores(cleaned_text)['compound']
     category = classify_supporter(text)
@@ -53,8 +49,12 @@ for text in text_data:
         "Sentimen": "Positif" if sentiment_score > 0.05 else "Negatif" if sentiment_score < -0.05 else "Netral"
     })
 
-# Konversi ke DataFrame
-df = pd.DataFrame(results)
+# Konversi ke DataFrame hasil
+df_output = pd.DataFrame(results)
+
+# Menyimpan hasil ke file Excel
+output_path = "hasil_analisis_sentimen.xlsx"
+df_output.to_excel(output_path, index=False)
 
 # Menampilkan hasil klasifikasi
-print(df)
+print(df_output)
