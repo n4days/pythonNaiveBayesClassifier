@@ -9,16 +9,16 @@ sia = SentimentIntensityAnalyzer()
 file_path = "datayangmaudicleaning.xlsx"
 df_input = pd.read_excel(file_path)
 
-# Pastikan ada kolom yang berisi teks (ganti 'KolomTeks' sesuai nama kolom di file Anda)
+# Pastikan ada kolom yang berisi teks (ganti 'text' sesuai nama kolom di file Anda)
 text_column = "text"  # Ganti dengan nama kolom yang sesuai
 if text_column not in df_input.columns:
     raise ValueError(f"Kolom '{text_column}' tidak ditemukan dalam file.")
 
 # Kata kunci untuk masing-masing pendukung
 keywords = {
-    "pendukung_anis": ["anis", "anies", "abah anies"],
-    "pendukung_prabowo": ["prabowo", "bapak prabowo", "pak prabowo"],
-    "pendukung_ganjar": ["ganjar", "pak ganjar", "rindu ganjar"]
+    "anis": ["anis", "anies", "abah anies", "anies baswedan", "anies presiden", "anies for president"],
+    "prabowo": ["prabowo", "bapak prabowo", "pak prabowo", "prabowo subianto", "prabowo presiden", "prabowo for president"],
+    "ganjar": ["ganjar", "pak ganjar", "rindu ganjar", "ganjar pranowo", "ganjar presiden", "ganjar for president"]
 }
 
 # Fungsi untuk membersihkan teks
@@ -33,7 +33,7 @@ def classify_supporter(text):
     for category, words in keywords.items():
         if any(word in text for word in words):
             return category
-    return "tidak_jelas"
+    return "random"  # Mengubah 'lainnya' menjadi 'random'
 
 # Menganalisis sentimen dan menentukan kategori
 results = []
